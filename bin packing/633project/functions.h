@@ -99,7 +99,6 @@ double* F(int x, int y, int *b, std::vector<item> validItemList, std::vector<ite
 //generate guillotine pattern for a bin
 std::vector<int> getGuillotinePattern(int L, int H, std::vector<item> itemlist, int *b, Mat img) {
 	int m = itemlist.size();			//m items
-	int sumvalid = m;
 	std::vector<int> containItem;
 
 	int length = max(L, H);
@@ -109,7 +108,8 @@ std::vector<int> getGuillotinePattern(int L, int H, std::vector<item> itemlist, 
 	for (int i = 0;i < itemlist.size();i++) {
 		btemp[i] = 1;
 	}
-	while(sumvalid>0) {          //there are remaining items
+	int sumvalid = 0;
+	do {          //there are remaining items
 		bool hon = true;
 		bool ver = true;
 		std::vector<item> validItemList;      //items which are not packed 
@@ -118,7 +118,8 @@ std::vector<int> getGuillotinePattern(int L, int H, std::vector<item> itemlist, 
 			if (b[i] == 1)
 				validItemList.insert(validItemList.end(), itemlist[i]);
 		}
-
+		sumvalid = validItemList.size();
+		length = max(L, H);
 		std::vector<strip*>* striplist = new std::vector<strip*>[length + 1];
 		for (int i = 0;i <= length;i++) {
 			striplist[i] = getStrip(i, validItemList);			//generate strips for current length
@@ -127,8 +128,7 @@ std::vector<int> getGuillotinePattern(int L, int H, std::vector<item> itemlist, 
 	{	
 		for (int y = H;hon&&ver&&y > 0 && x > 0;y--) {
 
-
-			for (int j = 0;hon&&ver&&j < 2 * m;j++) {
+			for (int j = 0;hon&&ver&&j < 2 * validItemList.size();j++) {
 				if (F(x, y, b, validItemList, itemlist, striplist)[1] == 0) {
 					int width = striplist[x][j]->W;
 					striplist[x][j]->updateEffectiveValue(validItemList, itemlist, b, btemp);
@@ -149,13 +149,15 @@ std::vector<int> getGuillotinePattern(int L, int H, std::vector<item> itemlist, 
 					else {
 						for (int i = 0;i < validItemList.size();i++) {
 							int id = validItemList[i].id;
-							printf("%d %d %d\n", b[id], btemp[id], striplist[x][j]->q->at(i));
+							//printf("%d %d %d\n", b[id], btemp[id], striplist[x][j]->q->at(i));
 							if (b[id] == 1 && btemp[id] == 1 && striplist[x][j]->q->at(i) > 0) {
 								b[id] = 0;
 								btemp[id] = 0;
 								containItem.insert(containItem.end(), id);
-								if (hon)
-									y = y - width;														//height is reduced after packing this strip
+								if (hon) {				//height is reduced after packing this strip
+									y = y - width;
+									H = H - width;
+								}
 								hon = false;															//a strip is packed horizontally 
 								sumvalid--;																//number of available item
 
@@ -192,8 +194,10 @@ std::vector<int> getGuillotinePattern(int L, int H, std::vector<item> itemlist, 
 								b[id] = 0;
 								btemp[id] = 0;
 								containItem.insert(containItem.end(), id);
-								if (ver)
+								if (ver) {
 									x = x - width;
+									L = L - width;
+								}
 								sumvalid--;
 								ver = false;
 
@@ -215,7 +219,7 @@ std::vector<int> getGuillotinePattern(int L, int H, std::vector<item> itemlist, 
 		
 		if (hon&&ver)				//no strip is packed, the bin should be full
 			break;
-	}
+	}while (sumvalid > 0);
 
 	return containItem;
 }
@@ -852,7 +856,7 @@ int computeBins(int L, int H, int Gmax, std::vector<item> itemlist, std::vector<
 		int m = itemlist.size();
 
 		printf("G=%d operating...\n", G);
-		if (G == Gmax)
+		if (G == Gmax||skip==true)
 			printf("\nOutputing images of bins...\n");
 		for (sumb = itemlist.size();sumb > 0;N++) {
 			//printf("N %d\n", N);
@@ -879,7 +883,7 @@ int computeBins(int L, int H, int Gmax, std::vector<item> itemlist, std::vector<
 			//It there are existing images with the same name, they will be painted with the patterns. 
 			//So remove them before running the program
 			std::string outputfile = "outputs/output" + s.str() + ".bmp";
-			if (G == Gmax&&type==0) {
+			if (G == Gmax&&type == 0 ) {
 				cv::imwrite(outputfile, img);
 			}
 			sumb = 0;
@@ -893,7 +897,7 @@ int computeBins(int L, int H, int Gmax, std::vector<item> itemlist, std::vector<
 			if (N == ceil(totalvalue / (L*H))) {
 				//The soulution of number of bins needed is optimal,because it's impossible to use less bins
 				skip = true;
-				G = Gmax;
+				G = Gmax-1;
 			}
 		}
 		if(!skip)

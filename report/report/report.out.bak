@@ -1,0 +1,17 @@
+\BOOKMARK [1][-]{section.1}{Motivation and Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Methods Used and Studied}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Algorithm for 2BPRG}{section.2}% 3
+\BOOKMARK [3][-]{subsubsection.2.1.1}{Strip}{subsection.2.1}% 4
+\BOOKMARK [3][-]{subsubsection.2.1.2}{Strip packing order}{subsection.2.1}% 5
+\BOOKMARK [2][-]{subsection.2.2}{Algorithm for 2BPRF}{section.2}% 6
+\BOOKMARK [3][-]{subsubsection.2.2.1}{Candidate Position}{subsection.2.2}% 7
+\BOOKMARK [3][-]{subsubsection.2.2.2}{Available Space}{subsection.2.2}% 8
+\BOOKMARK [3][-]{subsubsection.2.2.3}{Items Packing Order}{subsection.2.2}% 9
+\BOOKMARK [3][-]{subsubsection.2.2.4}{EA and GN}{subsection.2.2}% 10
+\BOOKMARK [2][-]{subsection.2.3}{Value Correction}{section.2}% 11
+\BOOKMARK [1][-]{section.3}{Results}{}% 12
+\BOOKMARK [2][-]{subsection.3.1}{Implementation Discuss}{section.3}% 13
+\BOOKMARK [3][-]{subsubsection.3.1.1}{Algorithm for 2BPRG}{subsection.3.1}% 14
+\BOOKMARK [3][-]{subsubsection.3.1.2}{Algorithm for 2BPRF}{subsection.3.1}% 15
+\BOOKMARK [2][-]{subsection.3.2}{Results}{section.3}% 16
+\BOOKMARK [1][-]{section.4}{Conclusion}{}% 17
